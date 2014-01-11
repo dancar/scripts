@@ -16,15 +16,20 @@ request.set_form_data(refresh: "Refresh")
 response = http.request(request)
 doc = Nokogiri::XML(response.body)
 rows = doc.css(".ttext")
-devices = (rows.length / 3).times.map do |i|
-  arr = 3.times.map do |j|
-    rows[(i * 3) + j].children.first.text
-  end
-  {
-    ip: arr[0],
-    name: arr[1],
-    mac: arr[2]
-  }
+
+# The structure of the input is something like:
+# Device1 IP
+# Device1 Name
+# Device1 MAC
+# Device2 IP
+# Device2 Name
+# Device2 MAC
+# ...
+# So we do some Ruby magic:
+devices = (rows.length / 3).times.map do |row|
+  Hash[*[:ip, :name, :mac].each_with_index.map { |attr, place|
+    [attr, rows[(row * 3) + place].children.first.text]
+  }.flatten]
 end
 
 name = ARGV[0]
