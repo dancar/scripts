@@ -2,7 +2,7 @@
 # Gets a verb conjugation information from spanishdict.com
 # Reference: http://docs.python-guide.org/en/latest/scenarios/scrape/
 
-import sys
+import io, json, sys
 import requests
 from lxml import html
 from pprint import pprint
@@ -45,4 +45,7 @@ class Verb:
 
 if __name__ == "__main__":
     verb = sys.argv[1]
-    pprint(Verb(verb).getConjugation())
+    conjugation = Verb(verb).getConjugation()
+    with io.open("result.json", "w") as file:
+        json_string = json.dumps(conjugation)
+        file.write(unicode(json_string))
