@@ -34,16 +34,18 @@ def box(x, c, last=false)
   ans
 end
 
-cwd           = box(' \\w '               , WHITE)
-line_number   = box('\\!'                 , LIGHT_GRAY)
-time          = box('\\t'                 , LIGHT_CYAN)
-date          = box('$(date "+%Y-%m-%d")' , LIGHT_BLUE)
-user_and_host = box('\\u@\\H'             , LIGHT_MAGENTA)
-git           = box('$(__git_ps1)'        , YELLOW, true)
-
-boxes = [cwd, line_number, time, date, user_and_host, git]
+boxes = { #[cwd, line_number, time, date, user_and_host, git]
+cwd:           box(' \\w '               , WHITE),
+status:        box('$(__status)'         , LIGHT_GREEN),
+line_number:   box('\\!'                 , LIGHT_GRAY),
+time:          box('\\t'                 , LIGHT_CYAN),
+date:          box('$(date "+%Y-%m-%d")' , LIGHT_BLUE),
+user_and_host: box('\\u@\\H'             , LIGHT_YELLOW),
+git:           box('$(__git_ps1)'        , YELLOW, true),
+}
 elements = [
-  line('╭─'), boxes, LINE, '─◈\\n',
-  ('└─➤ '), NORMAL
+  line('┌'), boxes.values, LINE, '\\n',
+      ('└➤  '), NORMAL
 ]
 puts elements.flatten.join("")
+# puts "\$(if [ \$? == 0 ]; then echo zero; else echo nonzero; fi) "
